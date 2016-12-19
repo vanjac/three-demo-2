@@ -40,3 +40,11 @@ class UseScanner(SimObject):
 
 world.simulator.addObject(UseScanner(world.buttonInputs['mouse-left']))
 
+
+class Coin(Entity):
+
+    def scan(self, timeElapsed, totalTime):
+        def do(toUpdateList):
+            self.rotate(Rotate(0, 0, timeElapsed * 3))
+            toUpdateList.append(self)
+        self.actions.addAction(do)
