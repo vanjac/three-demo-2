@@ -48,3 +48,7 @@ class Coin(Entity):
             self.rotate(Rotate(0, 0, timeElapsed * 3))
             toUpdateList.append(self)
         self.actions.addAction(do)
+
+    def coinCollide(self):
+        self.kill(True)
+        print("Coin!")
