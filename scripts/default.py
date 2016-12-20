@@ -52,3 +52,33 @@ class Coin(Entity):
     def coinCollide(self):
         self.kill(True)
         print("Coin!")
+
+class Platform(Entity):
+
+    def __init__(self, movement, cycleTime):
+        super().__init__()
+        self.movement = movement
+        self.cycleTime = cycleTime
+        self.started = False
+        self.startTime = None
+        self.startPosition = None
+
+    def start(self):
+        self.started = True
+
+    def scan(self, timeElapsed, totalTime):
+        if self.started and self.startTime == None:
+            self.startTime = totalTime
+            self.startPosition = self.position
+        cycle = math.cos((totalTime - self.startTime)
+                         / self.cycleTime * math.pi*2) / 2 + .5
+        position = self.startPosition.lerp(
+            self.startPosition + self.movement, cycle)
+        def do(toUpdateList):
+            self.translate(position - self.position)
+            toUpdateList.append(self)
+        self.actions.addAction(do)
+            
+    def end(self):
+        self.started = False
+        self.startTime = None
