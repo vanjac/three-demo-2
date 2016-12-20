@@ -82,3 +82,11 @@ class Platform(Entity):
     def end(self):
         self.started = False
         self.startTime = None
+
+    def startTouch(self):
+        global world
+        self.addChild(world.camera)
+
+    def endTouch(self):
+        global world
+        self.removeChild(world.camera)
