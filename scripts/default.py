@@ -13,8 +13,8 @@ def makePlayer():
                                 AxisScale(world.axisInputs['mouse-y'], .005),
                                 xWalkAxis, yWalkAxis,
                                 world.buttonInputs['space'],
-                                walkSpeed = 30.0, fallMoveSpeed = 15.0,
-                                jumpVelocity = 60.0)
+                                walkSpeed = 45.0, fallMoveSpeed = 30.0,
+                                jumpVelocity = 60.0, walkDeceleration=.001)
     world.camera = player
     return player
 
