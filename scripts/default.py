@@ -104,6 +104,7 @@ class FallingPlatform(Entity):
     def __init__(self):
         super().__init__()
         self.falling = False
+        self.fallTime = None
         self.zVel = 0
 
     def startFalling(self):
@@ -112,7 +113,10 @@ class FallingPlatform(Entity):
     def scan(self, timeElapsed, totalTime):
         def do(toUpdateList):
             if self.falling:
-                self.zVel += FirstPersonPlayer.GRAVITY * timeElapsed
+                if self.fallTime == None:
+                    self.fallTime = totalTime
+                if totalTime - self.fallTime > 2.0:
+                    self.zVel += FirstPersonPlayer.GRAVITY * timeElapsed
             self.translate(Vector(0, 0, self.zVel * timeElapsed))
             toUpdateList.append(self)
         self.actions.addAction(do)
