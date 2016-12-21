@@ -41,6 +41,13 @@ class UseScanner(SimObject):
 
 world.simulator.addObject(UseScanner(world.buttonInputs['mouse-left']))
 
+class FallScanner(SimObject):
+
+    def scan(self, timeElapsed, totalTime):
+        if world.camera.getPosition().z < -1000:
+            die()
+
+world.simulator.addObject(FallScanner())
 
 world.score = 0
 
@@ -48,6 +55,10 @@ def addScore(score):
     world.score += score
     print(score, "points!")
     print("Score:", world.score)
+
+def die():
+    print("You died.")
+    exit()
 
 class Coin(Entity):
 
