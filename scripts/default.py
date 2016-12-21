@@ -98,3 +98,21 @@ class Platform(Entity):
     def endTouch(self):
         global world
         self.removeChild(world.camera)
+
+class FallingPlatform(Entity):
+
+    def __init__(self):
+        super().__init__()
+        self.falling = False
+        self.zVel = 0
+
+    def startFalling(self):
+        self.falling = True
+
+    def scan(self, timeElapsed, totalTime):
+        def do(toUpdateList):
+            if self.falling:
+                self.zVel += FirstPersonPlayer.GRAVITY * timeElapsed
+            self.translate(Vector(0, 0, self.zVel * timeElapsed))
+            toUpdateList.append(self)
+        self.actions.addAction(do)
