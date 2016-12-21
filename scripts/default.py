@@ -151,3 +151,32 @@ class Conveyor(Entity):
                 world.camera.translate(self.movement * timeElapsed)
                 toUpdateList.append(world.camera)
         self.actions.addAction(do)
+
+class Button(Entity):
+
+    def __init__(self, onAction=None, offAction=None):
+        super().__init__()
+        self.startPosition = None
+        self.targetPosition = None
+        self.onAction = onAction
+        self.offAction = offAction
+
+    def on(self):
+        self.targetPosition = self.startPosition - Vector(0,0,3)
+        if self.onAction != None:
+            self.onAction()
+
+    def off(self):
+        self.targetPosition = self.startPosition
+        if self.offAction != None:
+            self.offAction()
+
+    def scan(self, timeElapsed, totalTime):
+        if self.startPosition == None:
+            self.startPosition = self.getPosition()
+            self.targetPosition = self.startPosition
+        def do(toUpdateList):
+            self.translate((self.targetPosition - self.getPosition())
+                           * 0.5)
+            toUpdateList.append(self)
+        self.actions.addAction(do)
