@@ -131,3 +131,23 @@ class FallingPlatform(Entity):
             self.translate(Vector(0, 0, self.zVel * timeElapsed))
             toUpdateList.append(self)
         self.actions.addAction(do)
+
+class Conveyor(Entity):
+
+    def __init__(self, movement):
+        super().__init__()
+        self.movement = movement
+        self.enabled = False
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
+
+    def scan(self, timeElapsed, totalTime):
+        def do(toUpdateList):
+            if self.enabled:
+                world.camera.translate(self.movement * timeElapsed)
+                toUpdateList.append(world.camera)
+        self.actions.addAction(do)
