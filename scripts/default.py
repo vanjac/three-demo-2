@@ -58,7 +58,9 @@ def addScore(score):
 
 def die():
     print("You died.")
-    exit()
+    world.camera.translate(Vector(0,0,40)-world.camera.getPosition())
+    world.camera.xyVelocity = Vector(0, 0, 0)
+    world.score = 0
 
 class Coin(Entity):
 
