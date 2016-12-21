@@ -41,6 +41,13 @@ class UseScanner(SimObject):
 world.simulator.addObject(UseScanner(world.buttonInputs['mouse-left']))
 
 
+world.score = 0
+
+def addScore(score):
+    world.score += score
+    print(score, "points!")
+    print("Score:", world.score)
+
 class Coin(Entity):
 
     def scan(self, timeElapsed, totalTime):
@@ -51,7 +58,7 @@ class Coin(Entity):
 
     def coinCollide(self):
         self.kill(True)
-        print("Coin!")
+        addScore(100)
 
 class Platform(Entity):
 
