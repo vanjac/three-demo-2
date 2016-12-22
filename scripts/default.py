@@ -43,8 +43,15 @@ world.simulator.addObject(UseScanner(world.buttonInputs['mouse-left']))
 
 class FallScanner(SimObject):
 
+    def __init__(self):
+        self.die = False
+
     def scan(self, timeElapsed, totalTime):
         if world.camera.getPosition().z < -1000:
+            self.die = True
+
+    def update(self):
+        if self.die:
             die()
 
 world.simulator.addObject(FallScanner())
@@ -58,13 +65,9 @@ def addScore(score):
 
 def die():
     print("You died.")
-    world.camera.actions.doActions()
-    world.camera.translate(Vector(0,0,40)-world.camera.getPosition())
-    world.camera.xyVelocity = Vector(0, 0)
-    world.camera.zVelocity = 0
-    world.camera.newXYVelocity = Vector(0, 0)
-    world.camera.newZVelocity = 0
-    world.score = 0
+    mapPath = getMap("map1")
+    state = loadMapState(mapPath)
+    controller.setState(state)
 
 class Coin(Entity):
 
