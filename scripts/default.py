@@ -60,6 +60,7 @@ def die():
     print("You died.")
     world.camera.translate(Vector(0,0,40)-world.camera.getPosition())
     world.camera.xyVelocity = Vector(0, 0, 0)
+    world.camera.newXYVelocity = Vector(0, 0, 0)
     world.score = 0
 
 class Coin(Entity):
@@ -182,3 +183,83 @@ class Button(Entity):
                            * 0.5)
             toUpdateList.append(self)
         self.actions.addAction(do)
+
+class HiddenPlatform(Entity):
+    HIDDEN_Z = -2048
+    def __init__(self, startHidden=False):
+        super().__init__()
+        self.startZ = None
+        if startHidden:
+            self.cycleTarget = math.pi/2
+            self.cycle = math.pi/2
+        else:
+            self.cycleTarget = 0
+            self.cycle = 0
+        self.startHidden = startHidden
+
+    def hide(self):
+        self.cycleTarget = math.pi/2
+        
+    def show(self):
+        self.cycleTarget = 0
+
+    def scan(self, timeElapsed, totalTime):
+        if self.startZ == None:
+            self.startZ = self.getPosition().z
+        def do(toUpdateList):
+            if self.cycle > self.cycleTarget:
+                self.cycle -= timeElapsed*2
+            if self.cycle < self.cycleTarget:
+                self.cycle += timeElapsed*2
+            zRange = self.startZ - HiddenPlatform.HIDDEN_Z
+            position = (1-(1-math.cos(self.cycle))**6) \
+                       * zRange + HiddenPlatform.HIDDEN_Z
+            self.translate(Vector(0,0,position - self.getPosition().z))
+            toUpdateList.append(self)
+        self.actions.addAction(do)
+
+class RippleEnable(Entity):
+
+    def __init__(self, enableFunctions, disableFunctions, enabled=False):
+        super().__init__()
+        self.lastUpdateTime = -1
+        self.index = -1
+        self.enabled = [enabled for f in enableFunctions]
+        self.enableFunctions = enableFunctions
+        self.disableFunctions = disableFunctions
+        self.enabling = False
+
+    def _enableIndex(self, index):
+        if not self.enabled[index]:
+            self.enableFunctions[index]()
+            self.enabled[index] = True
+
+    def _disableIndex(self, index):
+        if self.enabled[index]:
+            self.disableFunctions[index]()
+            self.enabled[index] = False
+
+    def enable(self):
+        self.enabling = True
+        self.index = 0
+        self.lastUpdateTime = -1
+
+    def disable(self):
+        self.enabling = False
+        self.index = 0
+        self.lastUpdateTime = -1
+
+    def scan(self, timeElapsed, totalTime):
+        if self.lastUpdateTime == -1:
+            self.lastUpdateTime = totalTime
+        if self.index != -1:
+            if self.index >= len(self.enableFunctions):
+                self.index = -1
+            else:
+                if totalTime - self.lastUpdateTime > .2:
+                    self.lastUpdateTime = totalTime
+                    if self.enabling:
+                        self._enableIndex(self.index)
+                    else:
+                        self._disableIndex(self.index)
+                    self.index += 1
