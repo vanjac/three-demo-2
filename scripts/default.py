@@ -259,7 +259,7 @@ class RippleEnable(Entity):
             if self.index >= len(self.enableFunctions):
                 self.index = -1
             else:
-                if totalTime - self.lastUpdateTime > .2:
+                if totalTime - self.lastUpdateTime > .1:
                     self.lastUpdateTime = totalTime
                     if self.enabling:
                         self._enableIndex(self.index)
