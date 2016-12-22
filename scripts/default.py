@@ -58,6 +58,7 @@ def addScore(score):
 
 def die():
     print("You died.")
+    world.camera.actions.doActions()
     world.camera.translate(Vector(0,0,40)-world.camera.getPosition())
     world.camera.xyVelocity = Vector(0, 0, 0)
     world.camera.newXYVelocity = Vector(0, 0, 0)
