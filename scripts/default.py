@@ -59,9 +59,22 @@ world.simulator.addObject(FallScanner())
 world.score = 0
 
 def addScore(score):
+    global score1, score2, score3, score4, score5
     world.score += score
-    print(score, "points!")
-    print("Score:", world.score)
+
+    place = 1
+    for i in range(0, 5):
+        digit = int((world.score % (place * 10)) / place)
+
+        digitPoint = [score1, score2, score3, score4, score5][i]
+        digitRenderMesh = digitPoint.getChildren()[0]
+        digitMesh = digitRenderMesh.getMesh()
+
+        for face in digitMesh.getFaces():
+            face.textureShift = face.textureShift.setX(114 - 12 * digit)
+            face.calculateTextureVertices()
+
+        place *= 10
 
 def die():
     print("You died.")
