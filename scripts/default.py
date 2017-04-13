@@ -76,6 +76,9 @@ def addScore(score):
 
         place *= 10
 
+    world.audioStream = AudioStreamSequence(
+        [NoteStream(750, 0.05), NoteStream(1000, 0.05)])
+
 def die():
     print("You died.")
     mapPath = getMap("map1")
