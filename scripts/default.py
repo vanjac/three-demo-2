@@ -76,8 +76,9 @@ def addScore(score):
 
         place *= 10
 
-    world.audioStream = AudioStreamSequence(
-        [NoteStream(750, 0.05), NoteStream(1000, 0.05)])
+    world.audioStream = AmplitudeModifier( AudioStreamSequence(
+        [NoteStream(750, 0.05), NoteStream(1000, 0.05)]),
+                                           0.05 )
 
 def die():
     print("You died.")
@@ -135,6 +136,28 @@ class Platform(Entity):
         global world
         self.removeChild(world.camera)
 
+
+class InfinitePlatform(Entity):
+
+    def __init__(self, movement):
+        super().__init__()
+        self.movement = movement
+
+    def scan(self, timeElapsed, totalTime):
+        def do(toUpdateList):
+            self.translate(self.movement * timeElapsed)
+            toUpdateList.append(self)
+        self.actions.addAction(do)
+
+    def startTouch(self):
+        global world
+        self.addChild(world.camera)
+
+    def endTouch(self):
+        global world
+        self.removeChild(world.camera)
+
+
 class FallingPlatform(Entity):
 
     def __init__(self):
@@ -175,6 +198,13 @@ class Conveyor(Entity):
             if self.enabled:
                 world.camera.translate(self.movement * timeElapsed)
                 toUpdateList.append(world.camera)
+            renderMesh = self.getChildren()[0]
+            mesh = renderMesh.getMesh()
+            for f in mesh.getFaces():
+                if f.getNormal().z > 0.9:
+                    pass
+                    #f.textureShift += Vector(0, -timeElapsed * 8)
+                    #f.calculateTextureVertices()
         self.actions.addAction(do)
 
 class Button(Entity):
