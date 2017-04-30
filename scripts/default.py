@@ -1,3 +1,9 @@
+import wave
+
+properties = DEFAULT_PROPERTIES
+
+world.audioStream = AudioMixer(keepOpen=True, properties=properties)
+
 
 def makePlayer():
     forwardButtonAxis = ButtonAxis(world.buttonInputs['w'], 0.0, 1.0)
@@ -76,9 +82,13 @@ def addScore(score):
 
         place *= 10
 
-    world.audioStream = AmplitudeModifier( AudioStreamSequence(
-        [NoteStream(750, 0.05), NoteStream(1000, 0.05)]),
-                                           0.05 )
+    world.audioStream.addStream(
+        AmplitudeModifier(
+            AudioStreamSequence([
+                NoteStream(750, 0.05, properties),
+                NoteStream(1000, 0.05, properties)
+            ], properties),
+        0.2) )
 
 def die():
     print("You died.")
