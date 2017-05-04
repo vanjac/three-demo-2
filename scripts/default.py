@@ -1,24 +1,24 @@
 import wave
 
-properties = DEFAULT_PROPERTIES
+#music = wave.open(str(getAudio("Pixelland")), 'rb')
+#properties = propertiesForWave(music)
+properties = None
 
 world.audioStream = AudioMixer(keepOpen=True, properties=properties)
 
+#musicStream = AudioDataStream(music.readframes(music.getnframes()), properties)
+#musicStream.play()
+#musicStream.setCompleteAction(musicStream.play)
+#world.audioStream.addStream(musicStream)
+
 
 def makePlayer():
-    forwardButtonAxis = ButtonAxis(world.buttonInputs['w'], 0.0, 1.0)
-    backButtonAxis = ButtonAxis(world.buttonInputs['s'], 0.0, 1.0)
-    leftButtonAxis = ButtonAxis(world.buttonInputs['a'], 0.0, 1.0)
-    rightButtonAxis = ButtonAxis(world.buttonInputs['d'], 0.0, 1.0)
-    
-    xWalkAxis = AxisSum(rightButtonAxis, AxisOpposite(leftButtonAxis))
-    yWalkAxis = AxisSum(forwardButtonAxis, AxisOpposite(backButtonAxis))
-    
     player = FirstPersonPlayer( world,
-                                AxisScale(world.axisInputs['mouse-x'], .005),
-                                AxisScale(world.axisInputs['mouse-y'], .005),
-                                xWalkAxis, yWalkAxis,
-                                world.buttonInputs['space'],
+                                world.axisInputs['x_look'],
+                                world.axisInputs['y_look'],
+                                world.axisInputs['x_walk'],
+                                world.axisInputs['y_walk'],
+                                world.buttonInputs['jump'],
                                 walkSpeed = 50.0, fallMoveSpeed = 15.0,
                                 jumpVelocity = 60.0, walkDeceleration=.001,
                                 fallDeceleration=.7)
@@ -45,7 +45,7 @@ class UseScanner(SimObject):
         if event == ButtonInput.PRESSED_EVENT:
             use()
 
-world.simulator.addObject(UseScanner(world.buttonInputs['mouse-left']))
+world.simulator.addObject(UseScanner(world.buttonInputs['use']))
 
 class FallScanner(SimObject):
 
